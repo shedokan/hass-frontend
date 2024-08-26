@@ -266,9 +266,9 @@ export class HaAuthorize extends litLocalizeLiteMixin(LitElement) {
       );
     }
 
-    if (window.innerWidth > 450) {
-      import("../resources/particles");
-    }
+    // if (window.innerWidth > 450) {
+    //   import("../resources/particles");
+    // }
 
     // If we are logging into the instance that is hosting this auth form
     // we will register the service worker to start preloading.
@@ -277,7 +277,7 @@ export class HaAuthorize extends litLocalizeLiteMixin(LitElement) {
       registerServiceWorker(this, false);
     }
 
-    import("../components/ha-language-picker");
+    // import("../components/ha-language-picker");
   }
 
   protected updated(changedProps: PropertyValues) {
