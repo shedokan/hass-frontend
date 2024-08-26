@@ -174,7 +174,7 @@ const createWebpackConfig = ({
           browserslistEnv: "legacy",
           runtime: { version: dependencies["@babel/runtime"] },
         }),
-      new BundleAnalyzerPlugin(),
+      !isProdBuild && new BundleAnalyzerPlugin(),
     ].filter(Boolean),
     resolve: {
       extensions: [".ts", ".js", ".json"],
