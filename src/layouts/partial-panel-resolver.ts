@@ -42,6 +42,8 @@ class PartialPanelResolver extends HassRouterPage {
   @property({ attribute: false }) public hass!: HomeAssistant;
 
   @property({ type: Boolean }) public narrow = false;
+  
+  @property({ type: Boolean }) public bareBones = false;
 
   private _waitForStart = false;
 
@@ -99,6 +101,7 @@ class PartialPanelResolver extends HassRouterPage {
 
     el.hass = hass;
     el.narrow = this.narrow;
+    el.bareBones = this.bareBones;
     el.route = this.routeTail;
     el.panel = hass.panels[this._currentPage];
   }

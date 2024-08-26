@@ -10,6 +10,7 @@ const WebpackBar = require("webpackbar");
 const {
   TransformAsyncModulesPlugin,
 } = require("transform-async-modules-webpack-plugin");
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { dependencies } = require("../package.json");
 const paths = require("./paths.cjs");
 const bundle = require("./bundle.cjs");
@@ -173,6 +174,7 @@ const createWebpackConfig = ({
           browserslistEnv: "legacy",
           runtime: { version: dependencies["@babel/runtime"] },
         }),
+      new BundleAnalyzerPlugin(),
     ].filter(Boolean),
     resolve: {
       extensions: [".ts", ".js", ".json"],

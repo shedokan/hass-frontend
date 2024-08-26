@@ -1,5 +1,3 @@
-import "@material/mwc-button";
-import "@material/mwc-list/mwc-list-item";
 import type { RequestSelectedDetail } from "@material/mwc-list/mwc-list-item";
 import {
   mdiCodeBraces,
@@ -15,8 +13,6 @@ import {
   mdiShape,
   mdiViewDashboard,
 } from "@mdi/js";
-import "@polymer/paper-tabs/paper-tab";
-import "@polymer/paper-tabs/paper-tabs";
 import {
   CSSResultGroup,
   LitElement,
@@ -43,14 +39,6 @@ import {
 import { computeRTLDirection } from "../../common/util/compute_rtl";
 import { debounce } from "../../common/util/debounce";
 import { afterNextRender } from "../../common/util/render-status";
-import "../../components/ha-button-menu";
-import "../../components/ha-icon";
-import "../../components/ha-icon-button";
-import "../../components/ha-icon-button-arrow-next";
-import "../../components/ha-icon-button-arrow-prev";
-import "../../components/ha-menu-button";
-import "../../components/ha-svg-icon";
-import "../../components/ha-tabs";
 import type { LovelacePanelConfig } from "../../data/lovelace";
 import {
   LovelaceConfig,
@@ -92,6 +80,8 @@ class HUIRoot extends LitElement {
   @property({ attribute: false }) public lovelace?: Lovelace;
 
   @property({ type: Boolean }) public narrow = false;
+  
+  @property({ type: Boolean }) public bareBones = false;
 
   @property({ attribute: false }) public route?: {
     path: string;
@@ -117,6 +107,20 @@ class HUIRoot extends LitElement {
       100,
       false
     );
+
+    if(!this.bareBones){
+      import("../../components/ha-button-menu");
+      import("../../components/ha-icon");
+      import("../../components/ha-icon-button");
+      import("../../components/ha-icon-button-arrow-next");
+      import("../../components/ha-icon-button-arrow-prev");
+      import("../../components/ha-menu-button");
+      import("../../components/ha-svg-icon");
+      import("@material/mwc-list/mwc-list-item");
+      import(/* webpackPreload: true */ "@polymer/paper-tabs/paper-tab");
+      import(/* webpackPreload: true */ "@polymer/paper-tabs/paper-tabs");
+      import(/* webpackPreload: true */ "../../components/ha-tabs");
+    }
   }
 
   private _renderActionItems(): TemplateResult {
@@ -282,6 +286,11 @@ class HUIRoot extends LitElement {
   }
 
   protected render(): TemplateResult {
+    const viewRoot = html`<div id="view" @ll-rebuild=${this._debouncedConfigChanged} style=${this.bareBones ? 'padding-top: 0' : ''}></div>`;
+    if(this.bareBones){
+      return viewRoot;
+    }
+    
     const views = this.lovelace?.config.views ?? [];
 
     const curViewConfig =
@@ -469,7 +478,7 @@ class HUIRoot extends LitElement {
               `
             : ""}
         </div>
-        <div id="view" @ll-rebuild=${this._debouncedConfigChanged}></div>
+        ${viewRoot}
       </div>
     `;
   }
@@ -730,6 +739,10 @@ class HUIRoot extends LitElement {
     if (!shouldHandleRequestSelectedEvent(ev)) {
       return;
     }
+    
+    // TODO: Only do this once
+    import("@material/mwc-button");
+    
     this._enableEditMode();
   }
 

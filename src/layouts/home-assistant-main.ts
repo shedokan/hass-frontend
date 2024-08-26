@@ -11,7 +11,6 @@ import { customElement, property, state } from "lit/decorators";
 import { fireEvent, HASSDomEvent } from "../common/dom/fire_event";
 import { listenMediaQuery } from "../common/dom/media_query";
 import { toggleAttribute } from "../common/dom/toggle_attribute";
-import "../components/ha-drawer";
 import { showNotificationDrawer } from "../dialogs/notifications/show-notification-drawer";
 import type { HomeAssistant, Route } from "../types";
 import "./partial-panel-resolver";
@@ -41,6 +40,8 @@ export class HomeAssistantMain extends LitElement {
   @property({ attribute: false }) public route?: Route;
 
   @property({ type: Boolean }) public narrow = false;
+  
+  @property({ type: Boolean }) public bareBones = true;
 
   @state() private _sidebarEditMode = false;
 
@@ -58,6 +59,17 @@ export class HomeAssistantMain extends LitElement {
   protected render(): TemplateResult {
     const sidebarNarrow = this._sidebarNarrow || this._externalSidebar;
 
+    const partialPanelResolver = html`
+    <partial-panel-resolver
+      .narrow=${this.narrow}
+      .bareBones=${this.bareBones}
+      .hass=${this.hass}
+      .route=${this.route}
+      slot="appContent"
+    ></partial-panel-resolver>`;
+    
+    if(this.bareBones) return partialPanelResolver;
+    
     return html`
       <ha-drawer
         .type=${sidebarNarrow ? "modal" : ""}
@@ -72,18 +84,16 @@ export class HomeAssistantMain extends LitElement {
           .editMode=${this._sidebarEditMode}
           .alwaysExpand=${sidebarNarrow || this.hass.dockedSidebar === "docked"}
         ></ha-sidebar>
-        <partial-panel-resolver
-          .narrow=${this.narrow}
-          .hass=${this.hass}
-          .route=${this.route}
-          slot="appContent"
-        ></partial-panel-resolver>
+        ${partialPanelResolver}
       </ha-drawer>
     `;
   }
 
   protected firstUpdated() {
-    import(/* webpackPreload: true */ "../components/ha-sidebar");
+    if(!this.bareBones){
+      import(/* webpackPreload: true */ "../components/ha-sidebar");
+      import(/* webpackPreload: true */ "../components/ha-drawer");
+    }
 
     if (this.hass.auth.external) {
       this._externalSidebar =
@@ -93,6 +103,8 @@ export class HomeAssistantMain extends LitElement {
       );
     }
 
+    if(this.bareBones) return;
+    
     this.addEventListener(
       "hass-edit-sidebar",
       (ev: HASSDomEvent<EditSideBarEvent>) => {

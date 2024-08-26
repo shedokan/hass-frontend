@@ -1,7 +1,7 @@
 import { css, unsafeCSS } from "lit";
 
 export const fontStyles = css`
-  @font-face {
+  /*@font-face {
     font-family: "Roboto";
     src:
       local("Roboto Thin"),
@@ -120,5 +120,5 @@ export const fontStyles = css`
         format("woff2");
     font-weight: 900;
     font-style: italic;
-  }
+  }*/
 `.toString();

@@ -1,6 +1,6 @@
 import "@material/mwc-button";
 import deepFreeze from "deep-freeze";
-import { UnsubscribeFunc } from "home-assistant-js-websocket";
+import type { UnsubscribeFunc } from "home-assistant-js-websocket";
 import { html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
 import { constructUrlCurrentPath } from "../../common/url/construct-url";
@@ -27,13 +27,13 @@ import { fetchResources } from "../../data/lovelace/resource";
 import { WindowWithPreloads } from "../../data/preloads";
 import "../../layouts/hass-error-screen";
 import "../../layouts/hass-loading-screen";
-import { HomeAssistant, PanelInfo, Route } from "../../types";
+import type { HomeAssistant, PanelInfo, Route } from "../../types";
 import { showToast } from "../../util/toast";
 import { loadLovelaceResources } from "./common/load-resources";
 import { showSaveDialog } from "./editor/show-save-config-dialog";
 import "./hui-root";
 import { generateLovelaceDashboardStrategy } from "./strategies/get-strategy";
-import { Lovelace } from "./types";
+import type { Lovelace } from "./types";
 
 (window as any).loadCardHelpers = () => import("./custom-card-helpers");
 
@@ -57,6 +57,8 @@ export class LovelacePanel extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
 
   @property({ type: Boolean }) public narrow = false;
+  
+  @property({ type: Boolean }) public bareBones = false;
 
   @property({ attribute: false }) public route?: Route;
 
@@ -125,6 +127,7 @@ export class LovelacePanel extends LitElement {
           .lovelace=${this.lovelace}
           .route=${this.route}
           .narrow=${this.narrow}
+          .bareBones=${this.bareBones}
           @config-refresh=${this._forceFetchConfig}
         ></hui-root>
       `;
